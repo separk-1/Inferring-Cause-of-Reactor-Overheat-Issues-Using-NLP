@@ -39,11 +39,10 @@ logger = logging.getLogger(__name__)
 
 nlp = spacy.load("en_core_web_sm")
 
-def retrieve_relevant_docs(question, retriever, k=5, threshold=0.5):
-    docs_with_scores = retriever.get_relevant_documents_with_scores(question, k=k)
-    # 유사도 점수가 threshold 이상인 문서만 선택
-    filtered_docs = [doc for doc, score in docs_with_scores if score >= threshold]
-    return filtered_docs if filtered_docs else [doc for doc, _ in docs_with_scores[:1]]  # 최소 1개 반환
+def retrieve_relevant_docs(question, retriever, k=5):
+    # 단순히 k개의 문서를 반환합니다.
+    docs = retriever.get_relevant_documents(question, k=k)
+    return docs if docs else []
 
 def analyze_database_and_create_graph():
     pdf_files = find_all_pdfs(app.config['UPLOAD_FOLDER'])
@@ -77,10 +76,7 @@ def ask_question():
     if not question:
         return jsonify({'error': 'Missing question'}), 400
 
-    # Load file paths and titles from the CSV file
     file_titles = load_file_titles('./file_titles.csv')
-
-    # Get all PDF files in the directory
     pdf_files = find_all_pdfs(app.config['UPLOAD_FOLDER'])
 
     if not pdf_files:
@@ -89,7 +85,6 @@ def ask_question():
     combined_chunks_vector_store = None
     references = []
 
-    # Progress bar to show file processing
     for pdf_file in tqdm(pdf_files, desc="Processing PDFs"):
         vectorstore = encode_pdf(pdf_file, chunk_size=1000, chunk_overlap=200)
 
@@ -98,32 +93,29 @@ def ask_question():
         else:
             combined_chunks_vector_store.merge_from(vectorstore)
 
-    # Retrieve the relevant context (returning the document object itself)
+    # 유사도 없이 k개의 문서 검색
     context_docs = retrieve_relevant_docs(
-    question, 
-    combined_chunks_vector_store.as_retriever(), 
-    k=5, 
-    threshold=0
+        question, 
+        combined_chunks_vector_store.as_retriever(), 
+        k=5
     )
 
-    # Append source of related files to references by accessing metadata
     for doc in context_docs:
         if hasattr(doc, 'metadata') and 'source' in doc.metadata:
-            file_path = doc.metadata['source']  # Use the full file path
-            normalized_path = os.path.normpath(file_path)  # Normalize the path for matching
-            normalized_path = normalized_path.replace("\\", "/")  # Convert backslashes to slashes (if necessary)
-            
-            # Find file title using the normalized path
+            file_path = doc.metadata['source']
+            normalized_path = os.path.normpath(file_path).replace("\\", "/")
             file_title = file_titles.get(normalized_path, "Unknown Title")
             references.append({"file_path": normalized_path, "file_title": file_title})
 
-    # Remove duplicate file paths and titles
     references = [dict(t) for t in {tuple(d.items()) for d in references}]
 
-    # Generate an answer using the context
     llm = ChatOpenAI(temperature=0.3, model_name="gpt-4", max_tokens=2000)
     question_answer_from_context_chain = create_question_answer_from_context_chain(llm)
-    result = answer_question_from_context(question, " ".join([doc.page_content for doc in context_docs]), question_answer_from_context_chain)
+    result = answer_question_from_context(
+        question, 
+        " ".join([doc.page_content for doc in context_docs]), 
+        question_answer_from_context_chain
+    )
     return jsonify({'answer': result['answer'], 'context': result['context'], 'references': references}), 200
 
 if __name__ == '__main__':
