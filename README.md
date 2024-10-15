@@ -101,18 +101,23 @@ Open a browser and navigate to `http://127.0.0.1:5001` to access the web interfa
 RAG-Search-Engine/
 │
 ├── database/
-│   └── manual/
-│       ├── NUREG0800_Chapter5/  # Crawled dataset
+│   └── manual/ 
+│       ├── NUREG0800_Chapter5/      # Crawled dataset
 │       └── ...
-├── static/                      # Frontend assets (CSS, etc.)
-├── templates/                   # HTML files for the web app
+├── static/                          # Frontend assets (CSS, etc.)
+├── templates/                       # HTML files for the web app
 ├── functions/
-│   ├── functions_rag.py         # RAG-related functions
-│   └── functions_utils.py       # Utility functions
-├── get_dataset.py               # Script to crawl and download the dataset
-├── check_dataset.py             # Script to verify the dataset integrity
-├── app.py                       # Main web application script
-└── requirements.txt             # List of required dependencies
+│   ├── functions_rag.py             # RAG-related functions
+│   ├── functions_casual_relation.py # casual_relation-related functions
+│   └── functions_utils.py           # Utility functions
+├── evaluate/                        # Evaluation-related files
+│   ├── evaluate.py                  # Evaluation script
+│   └── simple_qa.json               # Sample question-answer pairs
+├── get_dataset.py                   # Script to crawl and download the dataset
+├── check_dataset.py                 # Script to verify the dataset integrity
+├── app.py                           # Main web application script
+└── requirements.txt                 # List of required dependencies
+
 ```
 
 ---

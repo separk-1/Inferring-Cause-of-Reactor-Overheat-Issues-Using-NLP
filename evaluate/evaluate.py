@@ -13,14 +13,13 @@ from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from rouge_score import rouge_scorer
 from bert_score import score
 
+# Load environment variables
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
 
 def calculate_bert_score(expected_answer, model_answer):
     P, R, F1 = score([model_answer], [expected_answer], lang="en", rescale_with_baseline=True)
     return F1.item()
-
 
 def load_pdf_files(upload_folder):
     pdf_files = []
@@ -37,7 +36,7 @@ def load_sample_qa(filepath):
 def calculate_bleu(expected_answer, model_answer):
     reference = [expected_answer.split()]
     candidate = model_answer.split()
-    smoothing = SmoothingFunction().method4 
+    smoothing = SmoothingFunction().method4
     return sentence_bleu(reference, candidate, smoothing_function=smoothing)
 
 def calculate_rouge(expected_answer, model_answer):
@@ -45,8 +44,8 @@ def calculate_rouge(expected_answer, model_answer):
     scores = scorer.score(expected_answer, model_answer)
     return scores
 
-def retrieve_relevant_docs(question, retriever, k=5, threshold=0):
-    docs_with_scores = retriever.invoke(question, k=k)  # invoke로 변경
+def retrieve_relevant_docs(question, retriever, k=5, threshold=0.4):
+    docs_with_scores = retriever.invoke(question, k=k)
     filtered_docs = [doc for doc, score in docs_with_scores if score >= threshold]
     return filtered_docs if filtered_docs else [doc for doc, _ in docs_with_scores[:1]]
 
@@ -70,9 +69,14 @@ def evaluate_model(pdf_files, sample_qa):
         question = qa_pair["question"]
         expected_answer = qa_pair["answer"]
         
-        context_docs = retrieve_context_per_question(question, combined_chunks_vector_store.as_retriever(search_kwargs={"k": 2}))
+        context_docs = retrieve_relevant_docs(
+            question, 
+            combined_chunks_vector_store.as_retriever(), 
+            k=5, 
+            threshold=0.4
+        )
+
         context = " ".join([doc.page_content for doc in context_docs])
-        
         result = answer_question_from_context(question, context, question_answer_from_context_chain)
         model_answer = result['answer']
         
@@ -101,12 +105,11 @@ def evaluate_model(pdf_files, sample_qa):
     print(f"Average ROUGE-L Score: {avg_rouge:.2f}")
     print(f"Average BERT Score: {avg_bert:.2f}")
 
-
 if __name__ == "__main__":
-    upload_folder = './database'  
+    upload_folder = '../database'  # 경로 수정
     pdf_files = load_pdf_files(upload_folder)
     
-    sample_qa_path = "simple_qa.json" 
+    sample_qa_path = "evaluate/simple_qa.json"  # 경로 수정
     sample_qa = load_sample_qa(sample_qa_path)
     
     if pdf_files:
