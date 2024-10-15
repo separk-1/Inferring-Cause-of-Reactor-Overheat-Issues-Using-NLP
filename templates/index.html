@@ -6,29 +6,37 @@
     <title>Search Page</title>
     <link rel="icon" href="{{ url_for('static', filename='magnifying_glass.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="container">
+        <h1>Cause of Reactor Overheat Issues</h1>
+        
+        <!-- 그래프 이미지 추가 -->
+        <div class="graph-container">
+            <img src="{{ url_for('static', filename='text_analysis_graph.png') }}" alt="Text Analysis Graph" class="graph-image">
+        </div>
 
-    <div class="search-container">
-        <input type="text" id="question" class="search-box" placeholder="Enter your question" onkeydown="handleKeyPress(event)">
-    </div>
+        <div class="search-container">
+            <input type="text" id="question" class="search-box" placeholder="Enter your question" onkeydown="handleKeyPress(event)">
+        </div>
 
-    <!-- Display the answer and references below -->
-    <div id="answer-section">
-        <p id="answer" class="answer-text"></p>
-        <p id="references-title">References</p>
-        <ul id="references" class="faded-references"></ul>
+        <!-- Display the answer and references below -->
+        <div id="answer-section">
+            <p id="answer" class="answer-text"></p>
+            <p id="references-title">References</p>
+            <ul id="references" class="faded-references"></ul>
+        </div>
     </div>
 
     <script>
-        // Submit the question with the Enter key
+        // 기존 JavaScript 코드 유지
         function handleKeyPress(event) {
             if (event.key === "Enter") {
                 askQuestion();
             }
         }
 
-        // Function to send the question to the server
         function askQuestion() {
             const question = document.getElementById("question").value;
 
@@ -45,47 +53,46 @@
 
             // Send the question to the server
             fetch("/ask", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ question: question })
-        }).then(response => response.json())
-        .then(data => {
-            // Remove loading animation
-            document.getElementById("question").classList.remove("loading");
-            
-            if (data.error) {
-                alert(data.error);
-            } else {
-                // Display the answer
-                document.getElementById("answer").innerText = data.answer;
-
-                // Render the reference data
-                const referencesList = document.getElementById("references");
-                referencesList.innerHTML = '';  // Remove existing references
-
-                if (data.references && data.references.length > 0) {
-                    // Display the reference title
-                    document.getElementById("references-title").style.display = "block";
-                    data.references.forEach(ref => {
-                        // Display both file_path and file_title for each object
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `${ref.file_title} (${ref.file_path})`;  // Show both file title and path
-                        referencesList.appendChild(listItem);
-                    });
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ question: question })
+            }).then(response => response.json())
+            .then(data => {
+                // Remove loading animation
+                document.getElementById("question").classList.remove("loading");
+                
+                if (data.error) {
+                    alert(data.error);
                 } else {
-                    document.getElementById("references-title").style.display = "none";
-                    referencesList.innerHTML = '<li>No references found.</li>';
-                }
-            }
-        }).catch(err => {
-            // Remove loading animation if there is an error
-            document.getElementById("question").classList.remove("loading");
-            alert("Error: " + err);
-        });
+                    // Display the answer
+                    document.getElementById("answer").innerText = data.answer;
 
-    }
+                    // Render the reference data
+                    const referencesList = document.getElementById("references");
+                    referencesList.innerHTML = '';  // Remove existing references
+
+                    if (data.references && data.references.length > 0) {
+                        // Display the reference title
+                        document.getElementById("references-title").style.display = "block";
+                        data.references.forEach(ref => {
+                            // Display both file_path and file_title for each object
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `${ref.file_title} (${ref.file_path})`;  // Show both file title and path
+                            referencesList.appendChild(listItem);
+                        });
+                    } else {
+                        document.getElementById("references-title").style.display = "none";
+                        referencesList.innerHTML = '<li>No references found.</li>';
+                    }
+                }
+            }).catch(err => {
+                // Remove loading animation if there is an error
+                document.getElementById("question").classList.remove("loading");
+                alert("Error: " + err);
+            });
+        }
     </script>
 </body>
 </html>

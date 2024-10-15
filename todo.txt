@@ -8,7 +8,7 @@ project:
     TD-IDF: scikit learn
     LDA
 2. Causal relationship mapping 
-    Stanford NLP library
+    Stanford NLP library -> scapy (memory issue; segmentation fault)
 3. Visualization
 4. Evaluation
 

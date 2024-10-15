@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What is reactor core isolation?",
+        "answer": "Reactor core isolation is a safety system that removes decay heat after reactor isolation during power operations."
+    },
+    {
+        "question": "What are the main functions of the isolation condenser system?",
+        "answer": "The main functions are to remove decay heat, limit reactor pressure, and provide water inventory."
+    },
+    {
+        "question": "How does the isolation condenser system operate?",
+        "answer": "It operates by natural circulation using high-pressure independent loops."
+    },
+    {
+        "question": "What is the purpose of the pressurizer relief tank?",
+        "answer": "The pressurizer relief tank condenses and cools discharge from pressurizer safety and relief valves, preventing environmental hazards."
+    },
+    {
+        "question": "What is the role of high-point vents in the reactor coolant system?",
+        "answer": "High-point vents remove noncondensible gases that could inhibit natural circulation and core cooling."
+    }
+]

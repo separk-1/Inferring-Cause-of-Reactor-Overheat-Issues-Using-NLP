@@ -19,6 +19,10 @@ langchain_community==0.0.5
 rank-bm25==0.2.2
 pymupdf==1.22.3
 deepeval==0.1.1
+flask_cors
+stanfordnlp
+nltk rouge-score
+bert-score
 
 # To download the spacy model after installation
 spacy download en_core_web_sm

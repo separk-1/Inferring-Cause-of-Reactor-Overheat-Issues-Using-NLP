@@ -84,6 +84,35 @@ body, html {
     color: #666;
 }
 
+/* 그래프 컨테이너 스타일 */
+.graph-container {
+    width: 100%;
+    height: 66vh; /* 뷰포트 높이의 2/3 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+/* 그래프 이미지 스타일 */
+.graph-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 768px) {
+    .graph-container {
+        height: 50vh; /* 작은 화면에서는 높이를 줄임 */
+    }
+
+    .search-box {
+        width: 90%; /* 작은 화면에서 검색창 너비 조정 */
+    }
+}
+
 /* Reference title */
 #references-title {
     font-weight: bold;
@@ -92,4 +121,130 @@ body, html {
     font-size: 16px;
     text-align: left;
     margin-left: 40px; /* Left margin */
+}
+
+/* Full page layout */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* 그래프 컨테이너 스타일 */
+.graph-container {
+    width: 100%;
+    height: 66vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 그래프 이미지 스타일 */
+.graph-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Center align the search box container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Search box styling */
+.search-box {
+    width: 100%;
+    max-width: 700px;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 50px;
+    border: 1px solid #dfe1e5;
+    box-shadow: 0px 1px 6px rgba(32, 33, 36, 0.28);
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Styling when the search box is focused */
+.search-box:focus {
+    box-shadow: 0px 1px 8px rgba(32, 33, 36, 0.4);
+}
+
+/* Loading animation */
+.search-box.loading {
+    border-color: transparent;
+    animation: spin-border 2s linear infinite;
+}
+
+@keyframes spin-border {
+    0% { box-shadow: 0 0 5px 5px rgba(66, 133, 244, 0.5); }
+    50% { box-shadow: 0 0 10px 10px rgba(66, 133, 244, 0.7); }
+    100% { box-shadow: 0 0 5px 5px rgba(66, 133, 244, 0.5); }
+}
+
+/* Answer text styling */
+.answer-text {
+    font-size: 18px;
+    line-height: 1.6;
+    text-align: left;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Faded and smaller reference list */
+.faded-references {
+    font-size: 14px;
+    color: #666;
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+    margin: 10px 0;
+}
+
+.faded-references li {
+    margin-top: 5px;
+}
+
+/* Reference title */
+#references-title {
+    font-weight: bold;
+    margin-top: 20px;
+    display: none;
+    font-size: 16px;
+    text-align: left;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .graph-container {
+        height: 50vh;
+    }
+
+    .search-box {
+        width: 90%;
+    }
 }
